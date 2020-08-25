@@ -83,7 +83,7 @@ If `p` is a `(Pair A D)`, then it is the same `(Pair A D)` as `(cons (car p) (cd
 
 `which-Nat` is an eliminator for `Nat` that can distinguish between `Nat`s whose values are `zero` and `Nat`s whose values have `add1` at the top.
 
-- The value of
+The value of
 ```
 (which-Nat zero
   'naught
@@ -91,3 +91,69 @@ If `p` is a `(Pair A D)`, then it is the same `(Pair A D)` as `(cons (car p) (cd
     'more))
 ```
 is `'naught`
+
+
+The value of
+```
+(which-Nat 4
+  'naught
+  (lambda (n)
+    'more))
+```
+is `'more`
+
+### The Law of `which-Nat`
+If `target` is a `Nat`, `base` is an `X`, and `step` is an `(-> Nat X)`,
+then
+```
+(which-Nat target
+  base
+  step)
+```
+is an `X`.
+
+### The First Commandment of `which-Nat`
+If
+```
+(which-Nat zero
+  base
+  step)
+```
+is an `X`, then it is the same `X` as `base`.
+
+### The Second Commandment of `which-Nat`
+If
+```
+(which-Nat (add1 n)
+  base
+  step)
+```
+is an `X`, then it is the same `X` as `(step n)`.
+
+
+The normal form of
+```
+(which-Nat 5
+  0
+  (lambda (n)
+    (+ 6 n)))
+```
+is
+```
+(lambda (n)
+  (+ 6 n)
+  4)
+```
+and therefore `10`.
+
+We want to define `gauss`, which is the sum of all numbers <= n. `(gauss 5) = (+ 5 (gauss 4))`. This should be easy to define but we do not allow recursion. The reason is because every expression must have a value. Some recursive definitions make it possible to write expressions that do not have values.
+
+```
+(claim forever
+  (-> Nat
+  Atom))
+
+(define forever
+  (lambda (and-ever)
+    (forever and-ever)))
+```
