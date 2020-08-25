@@ -83,9 +83,11 @@ If `p` is a `(Pair A D)`, then it is the same `(Pair A D)` as `(cons (car p) (cd
 
 `which-Nat` is an eliminator for `Nat` that can distinguish between `Nat`s whose values are `zero` and `Nat`s whose values have `add1` at the top.
 
-- The value of ```
+- The value of
+```
 (which-Nat zero
   'naught
   (lambda (n)
     'more))
-``` is `'naught`
+```
+is `'naught`
