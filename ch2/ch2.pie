@@ -1,0 +1,7 @@
+#lang pie
+
+(claim vegetables
+  (Pair Atom Atom))
+
+(define vegetables
+  (cons 'celery 'carrot))
