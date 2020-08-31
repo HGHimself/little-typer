@@ -157,3 +157,22 @@ We want to define `gauss`, which is the sum of all numbers <= n. `(gauss 5) = (+
   (lambda (and-ever)
     (forever and-ever)))
 ```
+
+### Type Values
+An expression that is described by a type is a value when it has a constructor at its top. Similarly, an expression that is a type is a value when it has a type constructor at the top.
+
+- `(car (cons Atom 'prune))` is not a type
+
+### Every `U` Is a Type
+Every expression described by `U` is a type, but not every type is described by `U`.
+
+Names defined with `define` are neither type constructors nor constructors. Thus, they are not values.
+
+Eliminators allow the information stored within a type to be used.
+
+### Definitions Are Unnecessary
+Everything can be done without definitions, but they do improve understanding.
+
+- An expression that exchanges `Nat`s in a pair is `(lambda (a d) (cons d a))`
+- An expression that extracts the first `Nat` from a pair is `(lambda (a d) a)`
+- The type of `+` is `(-> Nat Nat Nat)`

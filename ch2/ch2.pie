@@ -5,3 +5,60 @@
 
 (define vegetables
   (cons 'celery 'carrot))
+
+(claim Pear
+  U)
+
+(define Pear
+  (Pair Nat Nat))
+
+(claim Pear-maker
+  U)
+
+(define Pear-maker
+  (-> Nat Nat
+      Pear))
+
+(claim elim-Pear
+  (-> Pear Pear-maker
+      Pear))
+
+(define elim-Pear
+  (lambda (pear maker)
+    (maker (car pear) (cdr pear))))
+
+(claim pearwise+
+  (-> Pear Pear
+      Pear))
+
+
+; this is borrowed from later chapters
+; only here so we can evaluate the above
+(claim +
+  (-> Nat Nat
+      Nat))
+
+(claim step-+
+  (-> Nat Nat
+      Nat))
+
+(define step-+
+  (lambda (l-1 +-1)
+    (add1 +-1)))
+
+(define +
+  (lambda (a b)
+    (rec-Nat a
+      b
+      step-+)))
+
+
+(define pearwise+
+  (lambda (anjou bosc)
+    (elim-Pear anjou
+      (lambda (anjou-a anjou-d)
+        (elim-Pear bosc
+          (lambda (bosc-a bosc-d)
+            (cons
+              (+ anjou-a bosc-a)
+              (+ anjou-d bosc-d))))))))
