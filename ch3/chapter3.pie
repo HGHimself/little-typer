@@ -1,0 +1,99 @@
+#lang pie
+
+(claim +
+  (-> Nat Nat
+      Nat))
+
+(claim step-+
+  (-> Nat
+      Nat))
+
+(define step-+
+  (lambda (+n-1)
+    (add1 +n-1)))
+
+(define +
+  (lambda (a b)
+    (iter-Nat a
+      b
+      step-+)))
+
+(claim test-iter
+  (-> Nat
+      Nat))
+
+(claim test-rec
+  (-> Nat
+      Nat))
+
+(claim step-test-iter
+  (-> Nat
+      Nat))
+
+(claim step-test-rec
+  (-> Nat Nat
+      Nat))
+
+; this is interesting and may explain how these are different
+
+; here iter takes in just the smaller nat, which is inevitably the base
+; just like how in +, we use (add1 n-1) which works itself out to
+; (add1 (... (add1 base)))
+; here though, the base causes us to yield 0 which in turn evaluates to 0
+(define step-test-iter
+  (lambda (n-1)
+    (+ (add1 n-1) n-1)))
+
+
+(define step-test-rec
+  (lambda (n-1 step-test-n-1)
+    (+ (add1 n-1) step-test-n-1)))
+
+(define test-iter
+  (lambda (n)
+    (iter-Nat n
+      0
+      step-test-iter)))
+
+(define test-rec
+  (lambda (n)
+    (rec-Nat n
+      0
+      step-test-rec)))
+
+
+(claim zerop
+  (-> Nat
+      Atom))
+
+(claim step-zerop
+  (-> Nat Atom
+      Atom))
+
+(define step-zerop
+  (lambda (n-1 zeropn-1)
+    'nil))
+
+(define zerop
+  (lambda (n)
+    (rec-Nat n
+      't
+      step-zerop)))
+
+(claim gauss
+  (-> Nat
+      Nat))
+
+(claim step-gauss
+  (-> Nat Nat
+      Nat))
+
+(define step-gauss
+  (lambda (n-1 gaussn-1)
+    (+ (add1 n-1) gaussn-1)))
+
+(define gauss
+  (lambda (n)
+    (rec-Nat n
+      0
+      step-gauss)))
