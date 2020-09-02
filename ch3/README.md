@@ -62,3 +62,26 @@ The `iter-Nat` expression is the same type as *base*.
 We need to use `rec-Nat`, which gives us two arguments to the step function: the almost-answer and the value of the `rec-Nat` applied recursively to the almost-answer.
 
 The step function for `rec-Nat` is `(-> Nat X X)`.
+
+- `rec-Nat` is always safe to use
+
+If the step function does not rely on the almost-answer, then a value is already reached.
+If the step function does rely on the almost-answer, then the recursion is guaranteed to reach the base, which is always a value or an expression that becomes a value.
+
+This is because every *target* `Nat` is either `zero` or has `(add1 n)` where *n* is a smaller `Nat`.
+
+The only way *n* can be the same or larger is if the target was built of infinitely many `add1`s. Each function is total so there is no way to do this though.
+
+All lambda-expressions expect exactly one argument. Writing a lambda that takes more than one is syntactic sugar for many nested functions. Passing one of these functions less arguments than it takes will return another function waiting to accept the lest out arguments. This is called *currying*.
+
+## The Law of `rec-Nat`
+If *target* is an `X`, and *step* is an `(-> Nat X X)`,
+then `(rec-Nat target base step)` is an `X`.
+
+## The First Commandment of `rec-Nat`
+If `(rec-Nat zero base step)` is an `X`,
+then it is the same `X` as *base*.
+
+## The Second Commandment of `rec-Nat`
+If `(rec-Nat (add1 n) base step)` is an `X`,
+then it is the same `X` as `(step n (rec-Nat n base step)`).

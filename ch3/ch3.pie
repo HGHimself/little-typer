@@ -42,12 +42,12 @@
 ; here though, the base causes us to yield 0 which in turn evaluates to 0
 (define step-test-iter
   (lambda (n-1)
-    (+ (add1 n-1) n-1)))
+    (+ n-1 n-1)))
 
 
 (define step-test-rec
   (lambda (n-1 step-test-n-1)
-    (+ (add1 n-1) step-test-n-1)))
+    (+ n-1 step-test-n-1)))
 
 (define test-iter
   (lambda (n)
@@ -97,3 +97,39 @@
     (rec-Nat n
       0
       step-gauss)))
+
+(claim *
+  (-> Nat Nat
+      Nat))
+
+(claim step-*
+  (-> Nat Nat Nat
+      Nat))
+
+(define step-*
+  (lambda (j n-1 *n-1)
+    (+ j *n-1)))
+
+(define *
+  (lambda (n j)
+    (rec-Nat n
+      0
+      (step-* j))))
+
+(claim step-fac
+  (-> Nat Nat
+      Nat))
+
+(define step-fac
+  (lambda (n-1 facn-1)
+    (* (add1 n-1) facn-1)))
+
+(claim fac
+  (-> Nat
+      Nat))
+
+(define fac
+  (lambda (n)
+    (rec-Nat n
+      1
+      step-fac)))
