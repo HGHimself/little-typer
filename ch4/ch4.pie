@@ -1,0 +1,71 @@
+#lang pie
+
+(claim Pear
+  U)
+
+(define Pear
+  (Pair Nat Nat))
+
+(claim kar
+  (-> (Pair Nat Nat)
+      Nat))
+
+(claim kdr
+  (-> (Pair Nat Nat)
+      Nat))
+
+(claim swap
+  (-> (Pair Nat Nat)
+      (Pair Nat Nat)))
+
+(claim flip
+  (Pi ((A U)
+       (D U))
+    (-> (Pair A D)
+        (Pair D A))))
+
+(define flip
+  (lambda (A D)
+    (lambda (pair)
+      (cons (cdr pair) (car pair)))))
+
+(claim elim-Pair
+  (Pi ((A U)
+       (D U)
+       (X U))
+    (-> (Pair A D)
+        (-> A D
+            X)
+        X)))
+
+(define elim-Pair
+  (lambda (A D X)
+    (lambda (p f)
+      (f (car p) (cdr p)))))
+
+(define kar
+  (lambda (p)
+    (elim-Pair
+      Nat Nat
+      Nat
+      p
+      (lambda (a d)
+        a))))
+
+(define kdr
+  (lambda (p)
+    (elim-Pair
+      Nat Nat
+      Nat
+      p
+      (lambda (a d)
+        d))))
+
+(define swap
+  (lambda (p)
+    (elim-Pair
+      Nat Nat
+      (Pair Nat Nat)
+      p
+      (lambda (a d)
+        (cons d a)))))
