@@ -19,3 +19,17 @@
       (:: 'water
         (:: 'sourdough
           (:: 'salt nil))))))
+
+(claim toppings
+  (List Atom))
+
+(claim condiments
+  (List Atom))
+
+(define toppings
+  (:: 'potato
+    (:: 'butter nil)))
+
+(define condiments
+  (:: 'chives
+    (:: 'mayonaise nil)))
