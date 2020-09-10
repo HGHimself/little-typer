@@ -1,0 +1,21 @@
+#lang pie
+
+(claim expectations
+  (List Atom))
+
+(define expectations
+  (:: 'cooked
+    (:: 'eaten
+      (:: 'tried-cleaning
+        (:: 'understood
+          (:: 'slept nil))))))
+
+(claim rugbrod
+  (List Atom))
+
+(define rugbrod
+  (:: 'rye-flour
+    (:: 'rye-kernals
+      (:: 'water
+        (:: 'sourdough
+          (:: 'salt nil))))))
