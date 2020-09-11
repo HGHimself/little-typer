@@ -38,3 +38,7 @@ then it is the same *X* as *base*.
 ### The Second Commandmend of `rec-List`
 If `(rec-List (:: e es) base step)` is an *X*,
 then it is the same *X* as `(step e es (rec-List es base step))`.
+
+
+### List Entry Types
+All entries in a list must have the same type.
