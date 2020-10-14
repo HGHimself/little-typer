@@ -78,3 +78,67 @@
   (lambda (E k)
     (-> (Vec E (add1 k))
         E)))
+
+(claim step-last
+  (Pi ((E U)
+       (l-1 Nat))
+    (-> (mot-last E l-1)
+        (mot-last E (add1 l-1)))))
+
+(define step-last
+  (lambda (E l-1)
+    (lambda (lastl-1)
+      (lambda (es)
+        (lastl-1 (tail es))))))
+
+(define last
+  (lambda (E l)
+    (ind-Nat l
+      (mot-last E)
+      (base-last E)
+      (step-last E))))
+
+(claim drop-last
+  (Pi ((E U)
+       (l Nat))
+    (-> (Vec E (add1 l))
+        (Vec E l))))
+
+(claim base-drop-last
+  (Pi ((E U))
+    (-> (Vec E (add1 zero))
+        (Vec E zero))))
+
+(define base-drop-last
+  (lambda (E)
+    (lambda (es)
+      vecnil)))
+
+(claim mot-drop-last
+  (-> U Nat
+      U))
+
+(define mot-drop-last
+  (lambda (E k)
+    (-> (Vec E (add1 k))
+        (Vec E k))))
+
+(claim step-drop-last
+  (Pi ((E U)
+       (l Nat))
+    (-> (mot-drop-last E l)
+        (mot-drop-last E (add1 l)))))
+
+(define step-drop-last
+  (lambda (E l)
+    (lambda (drop-last-l-1)
+      (lambda (es)
+        (vec:: (head es)
+          (drop-last-l-1 (tail es)))))))
+
+(define drop-last
+  (lambda (E l)
+    (ind-Nat l
+      (mot-drop-last E)
+      (base-drop-last E)
+      (step-drop-last E))))
