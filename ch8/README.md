@@ -73,6 +73,9 @@ Now we can write expressions that originally could only be judged. The important
 If *f* is an `(-> X Y)` and *target* is an `(= X from to)`,
 then `(cong target f)` is an `(= Y (f from) (f to))`.
 
+### "If" and "Then" as Types
+The expressions `(-> X Y)` can be read as the statement, "if X then Y."
+
 ### The Commandment of cong
-If *x* is an *X*, nad *f* is an `(-> X Y)`,
+If *x* is an *X*, and *f* is an `(-> X Y)`,
 then `(cong (same X) f)` is the same `(= Y (f x) (f x))` as `(same (f x))`.
