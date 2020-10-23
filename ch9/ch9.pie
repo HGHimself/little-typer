@@ -200,6 +200,12 @@
 (define twice=double-of-17-again
   (same 34))
 
+(claim twice-Vec
+  (Pi ((E U)
+       (l Nat))
+    (-> (Vec E l)
+        (Vec E (twice l)))))
+
 (claim double-Vec
   (Pi ((E U)
        (l Nat))
@@ -245,3 +251,12 @@
       (mot-double-Vec E)
       (base-double-Vec E)
       (step-double-Vec E))))
+
+(define twice-Vec
+  (lambda (E l)
+    (lambda (es)
+      (replace (symm
+                 (twice=double l))
+        (lambda (k)
+          (Vec E k))
+        (double-Vec E l es)))))
