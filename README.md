@@ -11,23 +11,23 @@ To run these files, you need to:
 
 ## Types
 
-To understand dependent types, it is important to understand what a type is.
+A type is how you would categorize a "thing". It depends on the thing's form and nature. Normally you start with a small set of types and combine them into larger, more complex types. Some of the types available to us follow:
+- Nat - all positive numbers and zero; a.k.a. a natural number
+- Atom - any characters following a single quote, `'atom`, `'apple`, `'banana`
+- Pair - two types grouped together with a designated order
+- List - a homogenous, ordered group of types
+- Vec - a homogenous, ordered group of types that has a specified length
 
-Typically, types start with a capital letter. They look like `Atom` or `Nat`. A type is something that has a constructor and an eliminator.
+Types have something called constructors. These are how you create a type to become or to be used in an expression. The constructors for Nat are `zero` and `add1`. The constructor for a Pair is `cons`.
 
-For `Nat`, which is the type for a natural number, has one constructor: `zero`.
-For eliminators, `Nat` only has `add1`.
+Types also have something called eliminators. This is how you pull information out of a type. The eliminators for Pair are `car` and `cdr`, which give the first and second elements of the pair, respectively.
 
-We can
-```
-(claim one Nat)
-```
-or "Claim one to be the type Nat."
+Using these two concepts, one can achieve very complex statements. Let us discuss what statements are.
 
-Then
-```
-(define one
-  (add1 zero))
-```
+## Statements
 
-Easy enough, right?
+We can use the types above to claim that something exists. For example, I could claim that a Nat exists. In order to prove that I am correct, all I would need to do is provide a number, say 15. Maybe that is too simple to grasp so allow me to provide another example. I could claim that a `(Pair Nat Atom)` exists. In order to prove this, I can provide a `(cons 15 'apple)`.
+
+This idea is what allows us to prove things. Imagine, if you will, a more complex type than just Pair. If we provide a value with this type, it is living proof that the type exists. That is, the type is a theorem of our system, is true in our system, or can be derived with our system.
+
+The types provided above cannot say much in the way of things that are of interest.
