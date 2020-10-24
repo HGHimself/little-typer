@@ -1,0 +1,102 @@
+#lang pie
+
+(claim more-expectations
+  (Vec Atom 3))
+
+(define more-expectations
+  (vec:: 'need-induction
+    (vec:: 'understood-induction
+      (vec:: 'built-function vecnil))))
+
+(claim length
+  (Pi ((E U))
+    (-> (List E)
+        Nat)))
+
+(claim step-length
+  (Pi ((E U))
+    (-> E (List E) Nat
+        Nat)))
+
+(define step-length
+  (lambda (E)
+    (lambda (e es length-es)
+      (add1 length-es))))
+
+(define length
+  (lambda (E)
+    (lambda (es)
+      (rec-List es
+        0
+        (step-length E)))))
+
+(claim replicate
+  (Pi ((E U)
+       (l Nat))
+    (-> E
+        (Vec E l))))
+
+(claim mot-replicate
+  (-> U Nat
+      U))
+
+(define mot-replicate
+  (lambda (E)
+    (lambda (l)
+      (Vec E l))))
+
+(claim step-replicate
+  (Pi ((E U)
+       (e E)
+       (l-1 Nat))
+    (-> (mot-replicate E l-1)
+        (mot-replicate E (add1 l-1)))))
+
+(define step-replicate
+  (lambda (E e l)
+    (lambda (step-replicate-l-1)
+      (vec:: e step-replicate-l-1))))
+
+(define replicate
+  (lambda (E l)
+    (lambda (e)
+      (ind-Nat l
+        (mot-replicate E)
+        vecnil
+        (step-replicate E e)))))
+
+(claim list->vec
+  (Pi ((E U)
+       (es (List E)))
+    (Vec E (length E es))))
+
+(claim mot-list->vec
+  (Pi ((E U))
+    (-> (List E)
+      U)))
+
+(define mot-list->vec
+  (lambda (E)
+    (lambda (es)
+      (Vec E (length E es)))))
+
+(claim step-list->vec
+  (Pi ((E U)
+       (e E)
+       (es (List E)))
+    (-> (mot-list->vec E es)
+        (mot-list->vec E (:: e es)))))
+
+(define step-list->vec
+  (lambda (E)
+    (lambda (e es)
+      (lambda (list->vec-es)
+        (vec:: e list->vec-es)))))
+
+(define list->vec
+  (lambda (E)
+    (lambda (es)
+      (ind-List es
+        (mot-list->vec E)
+        vecnil
+        (step-list->vec E)))))
