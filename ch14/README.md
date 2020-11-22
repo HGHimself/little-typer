@@ -33,4 +33,18 @@ The eliminator for `Absurd` is `ind-Absurd` and it has neither bases not steps b
 ### The Law of `ind-Absurd`
 The expression `(ind-Absurd target mot)` is a *mot* if *target* is an `Absurd` and *mot* is a `U`.
 
-The purpose for `ind-Absurd` is to express that some expressions can never be evaluated, or in other words, that the expression is permanently neutral.
+The purpose for `ind-Absurd` is to express that some expressions can never be evaluated, or in other words, that the expression is permanently neutral. This is useful when you need a type but you know it is not possible. For example, consider an ind-Vec-expression that never uses the base, even though a base is required in the expression definition. It is possible to use an ind-Absurd expression that will fulfill the correct type of the base while making it impossible to ever be used. Here is an example from the next chapter:
+```
+(claim absurd-base
+  (Pi ((E U)
+       (j Nat))
+    (-> (= Nat 0 (add1 j))
+        (Vec E j))))
+
+(define absurd-base
+  (lambda (E j eq)
+    (ind-Absurd
+      (zero-not-add1 j eq)
+      (Vec E j))))
+```
+There is nothing that will ever fit into the target of the ind-Absurd expression here. The type of it is, invariably, `(Vec E j)` regardless of whether it will ever be used. This keeps the outer definition of the ind-Vec happy.

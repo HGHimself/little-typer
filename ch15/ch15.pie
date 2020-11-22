@@ -170,23 +170,26 @@
     (-> (mot-rest E l es)
         (mot-rest E (add1 l) (vec:: e es)))))
 
-(claim mot-step-rest
-  (Pi ((E U))
-    (-> Nat
-      U)))
-
-(define mot-step-rest
-  (lambda (E)
-    (lambda (j)
-      (Vec E j))))
-
 (define step-rest
   (lambda (E l e es)
     (lambda (rest-es)
       (lambda (j eq)
         (replace (sub1= l j eq)
-          (mot-step-rest E)
+          (lambda (j-1)
+            (Vec E j-1))
           es)))))
+
+(claim absurd-base
+  (Pi ((E U)
+       (j Nat))
+    (-> (= Nat 0 (add1 j))
+        (Vec E j))))
+
+(define absurd-base
+  (lambda (E j eq)
+    (ind-Absurd
+      (zero-not-add1 j eq)
+      (Vec E j))))
 
 (define rest
   (lambda (E l es)
@@ -197,4 +200,106 @@
            (zero-not-add1 j eq)
            (Vec E j)))
        (step-rest E))
+      l (same (add1 l)))))
+
+(claim drop-last
+  (Pi ((E U)
+       (n Nat))
+    (-> (Vec E (add1 n))
+        (Vec E n))))
+
+(claim mot-drop-last
+  (Pi ((E U)
+       (l Nat))
+    (-> (Vec E l)
+        U)))
+
+(define mot-drop-last
+  (lambda (E)
+    (lambda (l es)
+      (Pi ((j Nat))
+        (-> (= Nat l (add1 j))
+            (Vec E j))))))
+
+(claim step-drop-last
+  (Pi ((E U)
+       (l Nat)
+       (e E)
+       (es (Vec E l)))
+    (-> (mot-drop-last E l es)
+        (mot-drop-last E (add1 l) (vec:: e es)))))
+
+(claim ident-Nat
+  (-> Nat
+      Nat))
+
+(define ident-Nat
+  (lambda (n)
+    n))
+
+(claim dec1
+  (-> Nat
+      Nat))
+
+(define dec1
+  (lambda (n)
+    (which-Nat n
+      zero
+      ident-Nat)))
+
+(claim verbose-add1
+  (-> Nat
+      Nat))
+
+(define verbose-add1
+  (lambda (n)
+    (add1 (dec1 (add1 n)))))
+
+(claim add1-dec1-3=3
+  (= Nat 3 (add1 (dec1 3))))
+
+(define add1-dec1-3=3
+  (same 3))
+
+(claim add1-dec1=same
+  (Pi ((n Nat))
+    (= Nat
+       (add1 n)
+       (add1 (dec1 (add1 n))))))
+
+(define add1-dec1=same
+  (lambda (n)
+    (same (add1 (dec1 (add1 n))))))
+
+(claim add1-dec1=
+  (Pi ((l Nat)
+       (j Nat))
+    (-> (= Nat l j)
+      (= Nat
+        (add1 l)
+        (add1 (dec1 (add1 j)))))))
+
+(define add1-dec1=
+  (lambda (l j)
+    (lambda (eq)
+      (cong eq verbose-add1))))
+
+(define step-drop-last
+  (lambda (E l e es)
+    (lambda (drop-last-es)
+      (lambda (j eq)
+        (replace (sub1= l j eq)
+          (lambda (j-1)
+            (Vec E j-1))
+          (drop-last-es (dec1 j) (sub1= l j eq)))))))
+
+(define drop-last
+  (lambda (E l es)
+    ((ind-Vec (add1 l) es
+      (mot-drop-last E)
+      (lambda (j eq)
+         (ind-Absurd
+           (zero-not-add1 j eq)
+           (Vec E j)))
+      (step-drop-last E))
       l (same (add1 l)))))

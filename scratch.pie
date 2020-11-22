@@ -1,0 +1,56 @@
+#lang pie
+
+(claim ident-Nat
+  (-> Nat
+      Nat))
+
+(define ident-Nat
+  (lambda (n)
+    n))
+
+(claim dec1
+  (-> Nat
+      Nat))
+
+(define dec1
+  (lambda (n)
+    (which-Nat n
+      zero
+      ident-Nat)))
+
+(claim verbose-add1
+  (-> Nat
+      Nat))
+
+(define verbose-add1
+  (lambda (n)
+    (add1 (dec1 (add1 n)))))
+
+(claim add1-dec1-3=3
+  (= Nat 3 (add1 (dec1 3))))
+
+(define add1-dec1-3=3
+  (same 3))
+
+(claim add1-dec1=same
+  (Pi ((n Nat))
+    (= Nat
+       (add1 n)
+       (add1 (dec1 (add1 n))))))
+
+(define add1-dec1=same
+  (lambda (n)
+    (same (add1 (dec1 (add1 n))))))
+
+(claim add1-dec1=
+  (Pi ((l Nat)
+       (j Nat))
+    (-> (= Nat l j)
+      (= Nat
+        (add1 l)
+        (add1 (dec1 (add1 j)))))))
+
+(define add1-dec1=
+  (lambda (l j)
+    (lambda (eq)
+      (cong eq verbose-add1))))
