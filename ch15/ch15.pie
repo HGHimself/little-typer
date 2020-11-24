@@ -316,3 +316,30 @@
     (vec:: 'banana
       (vec:: 'clementine
         vecnil))))
+
+(claim pem-not-false
+  (Pi ((X U))
+    (-> (-> (Either X
+              (-> X
+                Absurd))
+          Absurd)
+      Absurd)))
+
+(define pem-not-false
+  (lambda (X)
+    (lambda (pem-false)
+      (pem-false
+        (right
+          (lambda (x)
+            (pem-false
+              (left x))))))))
+
+(claim Dec
+  (-> U
+      U))
+
+(define Dec
+  (lambda (X)
+    (Either X
+      (-> X
+          Absurd))))
