@@ -24,7 +24,7 @@
 
 (define verbose-add1
   (lambda (n)
-    (add1 (dec1 (add1 n)))))
+    (add1 (dec1 n))))
 
 (claim add1-dec1-3=3
   (= Nat 3 (add1 (dec1 3))))
@@ -42,15 +42,25 @@
   (lambda (n)
     (same (add1 (dec1 (add1 n))))))
 
+
 (claim add1-dec1=
   (Pi ((l Nat)
        (j Nat))
     (-> (= Nat l j)
       (= Nat
-        (add1 l)
-        (add1 (dec1 (add1 j)))))))
+        l
+        (add1 (which-Nat j
+             zero
+             ident-Nat))))))
 
 (define add1-dec1=
   (lambda (l j)
     (lambda (eq)
-      (cong eq verbose-add1))))
+      (replace eq
+        (lambda (k)
+          (= Nat
+            l
+            k))
+        (same (add1 (which-Nat j
+                    zero
+                    ident-Nat)))))))

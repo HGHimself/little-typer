@@ -202,33 +202,6 @@
        (step-rest E))
       l (same (add1 l)))))
 
-(claim drop-last
-  (Pi ((E U)
-       (n Nat))
-    (-> (Vec E (add1 n))
-        (Vec E n))))
-
-(claim mot-drop-last
-  (Pi ((E U)
-       (l Nat))
-    (-> (Vec E l)
-        U)))
-
-(define mot-drop-last
-  (lambda (E)
-    (lambda (l es)
-      (Pi ((j Nat))
-        (-> (= Nat l (add1 j))
-            (Vec E j))))))
-
-(claim step-drop-last
-  (Pi ((E U)
-       (l Nat)
-       (e E)
-       (es (Vec E l)))
-    (-> (mot-drop-last E l es)
-        (mot-drop-last E (add1 l) (vec:: e es)))))
-
 (claim ident-Nat
   (-> Nat
       Nat))
@@ -284,22 +257,62 @@
     (lambda (eq)
       (cong eq verbose-add1))))
 
+(claim drop-last
+  (Pi ((E U)
+       (l Nat))
+    (-> (Vec E (add1 l))
+        (Vec E l))))
+
+(claim mot-drop-last
+  (Pi ((E U)
+       (k Nat))
+    (-> (Vec E k)
+        U)))
+
+(define mot-drop-last
+  (lambda (E k)
+    (lambda (es)
+      (-> (Vec E (add1 k))
+        (Vec E k)))))
+
+(claim base-drop-last
+  (Pi ((E U))
+    (mot-drop-last E zero vecnil)))
+
+(define base-drop-last
+  (lambda (E)
+    (lambda (es)
+      vecnil)))
+
+(claim step-drop-last
+  (Pi ((E U)
+       (l Nat)
+       (e E)
+       (es (Vec E l)))
+    (-> (mot-drop-last E l es)
+        (mot-drop-last E (add1 l) (vec:: e es)))))
+
 (define step-drop-last
   (lambda (E l e es)
-    (lambda (drop-last-es)
-      (lambda (j eq)
-        (replace (sub1= l j eq)
-          (lambda (j-1)
-            (Vec E j-1))
-          (drop-last-es (dec1 j) (sub1= l j eq)))))))
+    (lambda (drop-last-l-1)
+      (lambda (ease)
+        (vec:: (head ease)
+          (drop-last-l-1 (tail ease)))))))
 
+; ha this is finally done, looks like I had to be a little sneaky though
 (define drop-last
   (lambda (E l es)
-    ((ind-Vec (add1 l) es
+    (tail ((ind-Vec (add1 l) es
       (mot-drop-last E)
-      (lambda (j eq)
-         (ind-Absurd
-           (zero-not-add1 j eq)
-           (Vec E j)))
+      (base-drop-last E)
       (step-drop-last E))
-      l (same (add1 l)))))
+    (vec:: (head es) es)))))
+
+(claim vector
+  (Vec Atom 3))
+
+(define vector
+  (vec:: 'apple
+    (vec:: 'banana
+      (vec:: 'clementine
+        vecnil))))
