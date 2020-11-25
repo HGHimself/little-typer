@@ -1,0 +1,206 @@
+#lang pie
+
+(claim +
+  (-> Nat Nat
+      Nat))
+
+(claim step-+
+  (-> Nat
+      Nat))
+
+(define step-+
+  (lambda (n)
+    (add1 n)))
+
+(define +
+  (lambda (n j)
+    (iter-Nat n
+      j
+      step-+)))
+
+(claim =consequence
+  (-> Nat Nat
+      U))
+
+(define =consequence
+  (lambda (n j)
+    (which-Nat n
+      (which-Nat j
+        Trivial
+        (lambda (j-1)
+          Absurd))
+      (lambda (n-1)
+        (which-Nat j
+          Absurd
+          (lambda (j-1)
+            (= Nat n-1 j-1)))))))
+
+(claim =consequence-wrong
+  (-> Nat Nat
+      U))
+
+(define =consequence-wrong
+  (lambda (n j)
+    (which-Nat n
+      (which-Nat j
+        Absurd
+        (lambda (j-1)
+          Trivial))
+      (lambda (n-1)
+        (which-Nat j
+          Trivial
+          (lambda (j-1)
+            (= Nat n-1 j-1)))))))
+
+(claim =consequence-same
+  (Pi ((n Nat))
+    (=consequence n n)))
+
+(define =consequence-same
+  (lambda (n)
+    (ind-Nat n
+      (lambda (k)
+        (=consequence k k))
+      sole
+      (lambda (n-1 consequence-n-1)
+        (same n-1)))))
+
+(claim use-Nat=
+  (Pi ((n Nat)
+       (j Nat))
+    (-> (= Nat n j)
+        (=consequence n j))))
+
+(define use-Nat=
+  (lambda (n j)
+    (lambda (n=j)
+      (replace n=j
+        (lambda (k)
+          (=consequence n k))
+        (=consequence-same n)))))
+
+(claim zero-not-add1
+  (Pi ((n Nat))
+    (-> (= Nat zero (add1 n))
+        Absurd)))
+
+(define zero-not-add1
+  (lambda (n)
+    (use-Nat= zero (add1 n))))
+
+(claim add1-not-zero
+  (Pi ((n Nat))
+    (-> (= Nat (add1 n) zero)
+        Absurd)))
+
+(define add1-not-zero
+  (lambda (n)
+    (use-Nat= (add1 n) zero)))
+
+(claim sub1=
+  (Pi ((n Nat)
+       (j Nat))
+    (-> (= Nat (add1 n) (add1 j))
+        (= Nat n j))))
+
+(define sub1=
+  (lambda (n j)
+    (use-Nat= (add1 n) (add1 j))))
+
+(claim Dec
+  (-> U
+      U))
+
+(define Dec
+  (lambda (X)
+    (Either X
+      (-> X
+          Absurd))))
+
+(claim zero?
+  (Pi ((j Nat))
+    (Dec
+     (= Nat zero j))))
+
+(define zero?
+  (lambda (j)
+    (ind-Nat j
+      (lambda (k)
+        (Dec
+          (= Nat zero k)))
+      (left
+        (same zero))
+      (lambda (j-1 zero?n-1)
+        (right
+          (zero-not-add1 j-1))))))
+
+(claim dec-add1=
+  (Pi ((n-1 Nat)
+       (j-1 Nat))
+    (-> (Dec
+          (= Nat
+            n-1
+            j-1))
+        (Dec
+          (= Nat
+            (add1 n-1)
+            (add1 j-1))))))
+
+(define dec-add1=
+  (lambda (n-1 j-1 eq-or-not)
+    (ind-Either eq-or-not
+      (lambda (target)
+        (Dec
+          (= Nat
+            (add1 n-1)
+            (add1 j-1))))
+      (lambda (yes)
+        (left
+          (cong yes (+ 1))))
+      (lambda (no)
+        (right
+          (lambda (n=j)
+            (no
+              (sub1= n-1 j-1
+                n=j))))))))
+
+(claim nat=?
+  (Pi ((n Nat)
+       (j Nat))
+    (Dec
+     (= Nat n j))))
+
+(claim mot-nat=?
+  (-> Nat
+      U))
+
+(define mot-nat=?
+  (lambda (k)
+    (Pi ((j Nat))
+      (Dec
+       (= Nat k j)))))
+
+(claim step-nat=?
+  (Pi ((n-1 Nat))
+    (-> (mot-nat=? n-1)
+        (mot-nat=? (add1 n-1)))))
+
+(define step-nat=?
+  (lambda (n-1 nat=?n-1 j)
+    (ind-Nat j
+      (lambda (k)
+        (Dec
+          (= Nat (add1 n-1) k)))
+      (right
+        (add1-not-zero n-1))
+      (lambda (j-1 nat=?-n-1)
+        (dec-add1= n-1 j-1
+          (nat=?n-1 j-1))))))
+
+(define nat=?
+  (lambda (n j)
+    ((ind-Nat n
+       mot-nat=?
+       zero?
+       step-nat=?)
+      j)))
